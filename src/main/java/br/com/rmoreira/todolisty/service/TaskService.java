@@ -29,4 +29,23 @@ public class TaskService {
                 .map(task -> ResponseEntity.ok().body(task))
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    public ResponseEntity<Task> updateTaskById(Task task, Long id) {
+        return taskRepository.findById(id)
+                .map(taskUpdate -> {
+                    taskUpdate.setTitle(task.getTitle());
+                    taskUpdate.setDescription(task.getDescription());
+                    taskUpdate.setDeadLine(task.getDeadLine());
+                    Task updated = taskRepository.save(taskUpdate);
+                    return ResponseEntity.ok().body(updated);
+                }).orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<Object> deleteById(Long id){
+        return taskRepository.findById(id)
+                .map(taskToDelete ->{
+                    taskRepository.deleteById(id);
+                    return ResponseEntity.noContent().build();
+                }).orElse(ResponseEntity.notFound().build());
+    }
 }
